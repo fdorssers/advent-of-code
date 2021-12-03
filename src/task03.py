@@ -12,10 +12,10 @@ def part1(array: np.array) -> int:
 
 
 def _mask_helper(column: np.array, mask: np.array, is_scrubber: bool) -> np.array:
-    # Need a small delta so numpy actually rounds 0.5 up to 1.
-    delta = 0.0000001
     if mask.sum() <= 1:
         return mask
+    # Need a small delta so numpy actually rounds 0.5 up to 1.
+    delta = 0.0000001
     column_masked = column[mask]
     mask_value = ((column_masked.sum() / column_masked.shape[0]) + delta).round().astype(int)
     if is_scrubber:
