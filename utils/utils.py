@@ -10,12 +10,16 @@ def load_data(example: bool = False) -> list[str]:
     automatically detected based on the calling stack.
 
     :param example:
+    :param line_parser:
     :return:
     """
     year = _get_year_from_stack()
     task_id = _get_task_from_stack()
     with open(
-        PROJECT_DIR / str(year) / "data" / f"task{task_id:02d}{'_example' if example else ''}.txt"
+        PROJECT_DIR
+        / f"aoc_{year}"
+        / "data"
+        / f"task{task_id:02d}{'_example' if example else ''}.txt"
     ) as f:
         return f.read().splitlines()
 
@@ -35,7 +39,7 @@ def _get_year_from_stack() -> int:
 
     :return:
     """
-    return int(Path(inspect.stack()[2].filename).parents[1].name)
+    return int(Path(inspect.stack()[2].filename).parents[1].name[-4:])
 
 
 def print_result(part: int, result: int) -> None:

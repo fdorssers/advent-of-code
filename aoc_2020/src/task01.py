@@ -10,8 +10,8 @@ def part(values: list[int], n: int) -> int:
 
 
 if __name__ == "__main__":
-    example_data = [int(v) for v in load_data(True)]
-    data = [int(v) for v in load_data(False)]
+    example_data = [int(line) for line in load_data(True)]
+    data = [int(line) for line in load_data(False)]
 
     assert part(example_data, 2) == 514579
     print_result(1, part(data, 2))
