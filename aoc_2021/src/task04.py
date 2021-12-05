@@ -63,7 +63,7 @@ def part1(numbers: List[int], boards: List[Board]) -> int:
             board.mark_number(number)
             if board.has_bingo():
                 return board.get_unmarked_value() * number
-    raise ValueError(f"No solution found")
+    raise ValueError("No solution found")
 
 
 def part2(numbers: List[int], boards: List[Board]) -> int:
@@ -77,7 +77,7 @@ def part2(numbers: List[int], boards: List[Board]) -> int:
                 to_be_removed.append(board)
         for board in to_be_removed:
             boards.remove(board)
-    raise ValueError(f"No solution found")
+    raise ValueError("No solution found")
 
 
 if __name__ == "__main__":
