@@ -1,6 +1,7 @@
 import numpy as np
 
-from src.utils import load_data, print_result
+from src.utils import load_data
+from src.utils import print_result
 
 
 def part1(array: np.array) -> int:

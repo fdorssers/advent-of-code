@@ -5,7 +5,7 @@ PROJECT_DIR = Path(__file__).parents[1]
 DATA_DIR = PROJECT_DIR / "data"
 
 
-def load_data(example: bool = False):
+def load_data(example: bool = False) -> list[str]:
     """
     Load either the actual or the example data for a specific day. Note that the day/task number is
     automatically detected based on the calling stack.
@@ -27,7 +27,7 @@ def _get_task_number_from_stack() -> int:
     return int(inspect.stack()[2].filename[-5:-3])
 
 
-def print_result(part: int, result: int):
+def print_result(part: int, result: int) -> None:
     """
     Pretty print the result.
 

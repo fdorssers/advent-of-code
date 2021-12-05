@@ -18,10 +18,10 @@ class Board:
     mask: np.array
     _bingo_marks: int = field(init=False)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self._bingo_marks = self.numbers.shape[0]
 
-    def mark_number(self, number: int):
+    def mark_number(self, number: int) -> None:
         self.mask = self.mask | (self.numbers == number)
 
     def has_bingo(self) -> bool:
@@ -31,7 +31,7 @@ class Board:
         )
 
     def get_unmarked_value(self) -> int:
-        return self.numbers[~self.mask].sum()
+        return int(self.numbers[~self.mask].sum())
 
     def reset(self) -> None:
         self.mask = np.full_like(self.numbers, False, dtype=bool)
@@ -63,6 +63,7 @@ def part1(numbers: List[int], boards: List[Board]) -> int:
             board.mark_number(number)
             if board.has_bingo():
                 return board.get_unmarked_value() * number
+    raise ValueError(f"No solution found")
 
 
 def part2(numbers: List[int], boards: List[Board]) -> int:
@@ -76,6 +77,7 @@ def part2(numbers: List[int], boards: List[Board]) -> int:
                 to_be_removed.append(board)
         for board in to_be_removed:
             boards.remove(board)
+    raise ValueError(f"No solution found")
 
 
 if __name__ == "__main__":

@@ -3,7 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import List
 
-from src.utils import load_data, print_result
+from src.utils import load_data
+from src.utils import print_result
 
 
 @dataclass
