@@ -2,7 +2,6 @@ import inspect
 from pathlib import Path
 
 PROJECT_DIR = Path(__file__).parents[1]
-DATA_DIR = PROJECT_DIR / "data"
 
 
 def load_data(example: bool = False) -> list[str]:
@@ -13,18 +12,30 @@ def load_data(example: bool = False) -> list[str]:
     :param example:
     :return:
     """
-    task_id = _get_task_number_from_stack()
-    with open(DATA_DIR / f"task{task_id:02d}{'_example' if example else ''}.txt") as f:
+    year = _get_year_from_stack()
+    task_id = _get_task_from_stack()
+    with open(
+        PROJECT_DIR / str(year) / "data" / f"task{task_id:02d}{'_example' if example else ''}.txt"
+    ) as f:
         return f.read().splitlines()
 
 
-def _get_task_number_from_stack() -> int:
+def _get_task_from_stack() -> int:
     """
     Retrieve the task number from the calling file.
 
     :return:
     """
     return int(inspect.stack()[2].filename[-5:-3])
+
+
+def _get_year_from_stack() -> int:
+    """
+    Retrieve the AOC year from the stack.
+
+    :return:
+    """
+    return int(Path(inspect.stack()[2].filename).parents[1].name)
 
 
 def print_result(part: int, result: int) -> None:
@@ -35,4 +46,4 @@ def print_result(part: int, result: int) -> None:
     :param result:
     :return:
     """
-    print(f"The result for task {_get_task_number_from_stack()} part {part} is: {result}")
+    print(f"The result for task {_get_task_from_stack()} part {part} is: {result}")

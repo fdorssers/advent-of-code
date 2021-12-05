@@ -7,8 +7,8 @@ from enum import Enum
 from typing import List
 from typing import Set
 
-from src.utils import load_data
-from src.utils import print_result
+from utils import load_data
+from utils import print_result
 
 
 class Orientation(Enum):

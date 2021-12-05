@@ -8,8 +8,8 @@ from typing import Tuple
 
 import numpy as np
 
-from src.utils import load_data
-from src.utils import print_result
+from utils import load_data
+from utils import print_result
 
 
 @dataclass

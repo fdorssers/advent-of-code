@@ -2,8 +2,8 @@ from typing import List
 
 from more_itertools import sliding_window as window
 
-from src.utils import load_data
-from src.utils import print_result
+from utils import load_data
+from utils import print_result
 
 
 def increase_count(values: List[int], win_size: int = 1) -> int:

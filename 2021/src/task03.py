@@ -1,7 +1,7 @@
 import numpy as np
 
-from src.utils import load_data
-from src.utils import print_result
+from utils import load_data
+from utils import print_result
 
 
 def part1(array: np.array) -> int:
