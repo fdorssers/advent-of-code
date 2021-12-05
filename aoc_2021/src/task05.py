@@ -62,7 +62,7 @@ def point_range(a: int, b: int) -> List[int]:
     return list(range(a, b + increment, increment))
 
 
-def part(lines: List[Line], orientations: Set[Orientation]) -> int:
+def find_overlapping(lines: List[Line], orientations: Set[Orientation]) -> int:
     lines = [line for line in lines if line.orientation in orientations]
     points = [point for line in lines for point in line.points]
     return len([k for k, v in Counter(points).items() if v > 1])
@@ -75,8 +75,8 @@ if __name__ == "__main__":
     task1_orientations = {Orientation.HORIZONTAL, Orientation.VERTICAL}
     task2_orientations = {Orientation.HORIZONTAL, Orientation.VERTICAL, Orientation.DIAGONAL}
 
-    assert part(example_data, task1_orientations) == 5
-    print_result(1, part(data, task1_orientations))
+    assert find_overlapping(example_data, task1_orientations) == 5
+    print_result(1, find_overlapping(data, task1_orientations))
 
-    assert part(example_data, task2_orientations) == 12
-    print_result(2, part(data, task2_orientations))
+    assert find_overlapping(example_data, task2_orientations) == 12
+    print_result(2, find_overlapping(data, task2_orientations))
