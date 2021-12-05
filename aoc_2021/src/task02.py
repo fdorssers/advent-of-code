@@ -21,17 +21,16 @@ class Command:
 def calculate_movement(commands: List[Command], task_one: bool) -> int:
     depth, depthv2, horizontal, aim = 0, 0, 0, 0
     for command in commands:
-        pass
-        # match command:
-        #     case Command(direction="forward", steps=steps):
-        #         horizontal += steps
-        #         depthv2 += aim * steps
-        #     case Command(direction="down", steps=steps):
-        #         depth += steps
-        #         aim += steps
-        #     case Command(direction="up", steps=steps):
-        #         depth -= steps
-        #         aim -= steps
+        match command:
+            case Command(direction="forward", steps=steps):
+                horizontal += steps
+                depthv2 += aim * steps
+            case Command(direction="down", steps=steps):
+                depth += steps
+                aim += steps
+            case Command(direction="up", steps=steps):
+                depth -= steps
+                aim -= steps
     return (horizontal * depth) if task_one else (horizontal * depthv2)
 
 
