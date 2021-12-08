@@ -69,8 +69,6 @@ if __name__ == "__main__":
     example_data = [parse_line(val) for val in load_data(True)]
     data = [parse_line(val) for val in load_data(False)]
 
-    print(example_data)
-
     assert part1(example_data) == 26
     print_result(1, part1(data))
 
