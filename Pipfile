@@ -10,6 +10,7 @@ more-itertools = "*"
 [dev-packages]
 black = "*"
 pre-commit = "*"
+jupyterlab = "*"
 
 [requires]
 python_version = "3.10"
