@@ -1,3 +1,5 @@
+from itertools import groupby
+
 import numpy as np
 
 from utils import load_data
@@ -8,19 +10,11 @@ FoldType = tuple[str, int]
 
 
 def parse_data(lines: list[str]) -> tuple[list[PointType], list[FoldType]]:
-    parsing_coords = True
-    coords = []
-    folds = []
-    for line in lines:
-        if not line:
-            parsing_coords = False
-            continue
-        if parsing_coords:
-            coords_info = line.split(",")
-            coords.append((int(coords_info[1]), int(coords_info[0])))
-        else:
-            fold_info = line.split()[-1].split("=")
-            folds.append((fold_info[0], int(fold_info[1])))
+    coords_group, folds_group = [
+        list(group) for key, group in groupby(lines, lambda x: bool(x)) if key
+    ]
+    coords = [(int(coord[1]), int(coord[0])) for coord in [c.split(",") for c in coords_group]]
+    folds = [(fold[0], int(fold[1])) for fold in [f.split()[-1].split("=") for f in folds_group]]
     return coords, folds
 
 
