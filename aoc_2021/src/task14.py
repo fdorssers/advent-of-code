@@ -30,5 +30,6 @@ if __name__ == "__main__":
     assert part(example_template, example_rules, 10) == 1588
     print_result(1, part(template, rules, 10))
 
+    # This one does currently not complete.
     assert part(example_template, example_rules, 40) == 2188189693529
     print_result(1, part(template, rules, 40))
