@@ -72,4 +72,4 @@ if __name__ == "__main__":
     print_result(1, task1(data))
 
     assert task2(example_data) == 12
-    print_result(1, task2(data))
+    print_result(2, task2(data))
