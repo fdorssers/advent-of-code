@@ -21,7 +21,7 @@ def load_data(example: bool = False) -> list[str]:
         / "data"
         / f"task{task_id:02d}{'_example' if example else ''}.txt"
     ) as f:
-        return f.read().splitlines()
+        return f.read().strip().splitlines()
 
 
 def _get_task_from_stack() -> int:
