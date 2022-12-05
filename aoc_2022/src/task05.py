@@ -1,5 +1,6 @@
 import copy
 import re
+from collections import defaultdict
 from typing import NamedTuple
 
 from utils import load_data
@@ -16,20 +17,12 @@ def parse_data(
     box_lines = lines[:file_split_index]
     step_lines = lines[file_split_index + 1 :]
 
-    num_cols = int(box_lines[-1].split()[-1])
-
-    stack: dict[int, list[str]] = {i: [] for i in range(1, num_cols + 1)}
+    stack: dict[int, list[str]] = defaultdict(list)
     for line in box_lines[:-1][::-1]:
-        for col_num, col_ind in enumerate(range(1, min(len(line), num_cols * 5 + 1), 4), 1):
-            character = line[col_ind].strip()
-            if character:
-                stack[col_num].append(line[col_ind])
-    parsed_steps = [
-        Step(
-            **dict(zip(["move_", "from_", "to_"], [int(val) for val in re.findall(r"\d+", line)]))
-        )
-        for line in step_lines
-    ]
+        for col_num, col_ind in enumerate(range(1, len(line), 4), 1):
+            if char := line[col_ind].strip():
+                stack[col_num].append(char)
+    parsed_steps = [Step(*[int(val) for val in re.findall(r"\d+", line)]) for line in step_lines]
     return stack, parsed_steps
 
 
