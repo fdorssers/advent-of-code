@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import inspect
 from pathlib import Path
 
@@ -21,7 +23,7 @@ def load_data(example: bool = False) -> list[str]:
         / "data"
         / f"task{task_id:02d}{'_example' if example else ''}.txt"
     ) as f:
-        return f.read().strip().splitlines()
+        return f.read().splitlines()
 
 
 def _get_task_from_stack() -> int:
@@ -42,7 +44,7 @@ def _get_year_from_stack() -> int:
     return int(Path(inspect.stack()[2].filename).parents[1].name[-4:])
 
 
-def print_result(part: int, result: int) -> None:
+def print_result(part: int, result: int | str) -> None:
     """
     Pretty print the result.
 
