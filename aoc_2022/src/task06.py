@@ -4,8 +4,8 @@ from utils import load_data
 from utils import print_result
 
 
-def part(signal: str, ps: int) -> int:
-    return next(i + ps for i, w in enumerate(sw(signal, ps)) if len(set(w)) == ps)
+def part(signal: str, p_size: int) -> int:
+    return next(i + p_size for i, win in enumerate(sw(signal, p_size)) if len(set(win)) == p_size)
 
 
 if __name__ == "__main__":
