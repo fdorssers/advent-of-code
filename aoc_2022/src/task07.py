@@ -3,6 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from dataclasses import field
 
+from more_itertools import flatten
+
 from utils import load_data
 from utils import print_result
 
@@ -24,21 +26,18 @@ class Directory:
         return sum([d.size for d in self.dirs] + [f.size for f in self.files])
 
     def dir(self, name: str) -> Directory:
-        for dir in self.dirs:
-            if dir.name == name:
-                return dir
-        raise ValueError(f"Unknown dir: {name}")
+        return next(d for d in self.dirs if d.name == name)
 
     def create_dir(self, name: str) -> None:
-        if not any(dir.name == name for dir in self.dirs):
+        if not any(d.name == name for d in self.dirs):
             self.dirs.append(Directory(name))
 
     def create_file(self, name: str, size: int) -> None:
-        if not any(file.name == name for file in self.files):
+        if not any(f.name == name for f in self.files):
             self.files.append(File(name, size))
 
 
-def get_directory(structure: Directory, path: list[str]) -> Directory:
+def get_cwd(structure: Directory, path: list[str]) -> Directory:
     cwd = structure
     for p in path:
         cwd = cwd.dir(p)
@@ -52,10 +51,10 @@ def parse_data(lines: list[str]) -> Directory:
     for line in lines[1:]:
         if line.startswith("$ cd .."):
             current_path = current_path[:-1]
-            cwd = get_directory(structure, current_path)
+            cwd = get_cwd(structure, current_path)
         elif line.startswith("$ cd "):
             current_path.append(line[5:])
-            cwd = get_directory(structure, current_path)
+            cwd = get_cwd(structure, current_path)
         elif line.startswith("$ ls"):
             continue
         elif line.startswith("dir "):
@@ -66,29 +65,16 @@ def parse_data(lines: list[str]) -> Directory:
     return structure
 
 
-def find_dirs(structure: Directory, max_size: int) -> int:
-    nested_size = sum(find_dirs(d, max_size) for d in structure.dirs)
-    if structure.size <= max_size:
-        return structure.size + nested_size
-    else:
-        return 0 + nested_size
+def get_sizes(structure: Directory) -> list[int]:
+    return [structure.size] + list(flatten(get_sizes(d) for d in structure.dirs))
 
 
 def part1(structure: Directory) -> int:
-    return find_dirs(structure, 100000)
-
-
-def get_sizes(structure: Directory) -> list[int]:
-    to_return = [structure.size]
-    for d in structure.dirs:
-        to_return.extend(get_sizes(d))
-    return to_return
+    return sum([size for size in get_sizes(structure) if size <= 100000])
 
 
 def part2(structure: Directory) -> int:
-    total_space = 70000000
-    required_space = 30000000
-    space_needed = required_space - (total_space - structure.size)
+    space_needed = 30000000 - (70000000 - structure.size)
     return next(size for size in sorted(get_sizes(structure)) if (space_needed - size) < 0)
 
 
