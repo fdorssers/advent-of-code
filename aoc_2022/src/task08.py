@@ -1,4 +1,3 @@
-from itertools import product
 from typing import Iterable
 
 import numpy as np
@@ -21,10 +20,7 @@ def determine_visibility(grid: np.array, row: int, col: int) -> bool:
 
 
 def part1(grid: np.array) -> int:
-    return sum(
-        determine_visibility(grid, row, col)
-        for row, col in product(range(grid.shape[0]), range(grid.shape[1]))
-    )
+    return sum(determine_visibility(grid, row, col) for row, col in np.ndindex(grid.shape))
 
 
 def check_direction(current_tree: int, trees: Iterable[int]) -> int:
@@ -46,12 +42,7 @@ def determine_score(grid: np.array, row: int, col: int) -> int:
 
 
 def part2(grid: np.array) -> int:
-    return max(
-        [
-            determine_score(grid, row, col)
-            for row, col in product(range(grid.shape[0]), range(grid.shape[1]))
-        ]
-    )
+    return max([determine_score(grid, row, col) for row, col in np.ndindex(grid.shape)])
 
 
 if __name__ == "__main__":
