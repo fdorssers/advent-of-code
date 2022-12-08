@@ -23,10 +23,10 @@ def task1(sacks: list[str]) -> int:
 
 
 def task2(sacks: list[str]) -> int:
-    sack_sum = 0
-    for i in range(0, len(sacks), 3):
-        sack_sum += VALUES[next(iter(set.intersection(*(set(s) for s in sacks[i : i + 3]))))]
-    return sack_sum
+    return sum(
+        VALUES[next(iter(set.intersection(*(set(s) for s in sacks[i : i + 3]))))]
+        for i in range(0, len(sacks), 3)
+    )
 
 
 if __name__ == "__main__":
