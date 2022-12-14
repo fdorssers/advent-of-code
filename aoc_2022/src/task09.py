@@ -44,9 +44,15 @@ class State:
             diff = self.head - self.tail
             if not self._is_connected(diff):
                 if (abs(diff.x) == 2) and (-1 <= diff.y <= 1):
-                    self.tail += Point(np.sign(diff.x), diff.y)
+                    self.tail += Point(
+                        np.sign(diff.x),
+                        diff.y,
+                    )
                 elif (-1 <= diff.x <= 1) and (abs(diff.y) == 2):
-                    self.tail += Point(diff.x, np.sign(diff.y))
+                    self.tail += Point(
+                        diff.x,
+                        np.sign(diff.y),
+                    )
                 else:
                     raise ValueError(f"Unsupported diff: {diff}")
             self.visited.add(self.tail)
