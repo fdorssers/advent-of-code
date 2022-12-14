@@ -1,4 +1,8 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
+
+import numpy as np
 
 from utils import load_data
 from utils import print_result
@@ -10,75 +14,62 @@ class Command:
     steps: int
 
 
-def tadd(t1: tuple[int, int], t2: tuple[int, int]) -> tuple[int, int]:
-    return (t1[0] + t2[0], t1[1] + t2[1])
+@dataclass(frozen=True)
+class Point:
+    x: int
+    y: int
+
+    def __add__(self, other: Point) -> Point:
+        return Point(self.x + other.x, self.y + other.y)
+
+    def __sub__(self, other: Point) -> Point:
+        return Point(self.x - other.x, self.y - other.y)
 
 
-def tsub(t1: tuple[int, int], t2: tuple[int, int]) -> tuple[int, int]:
-    return (t1[0] - t2[0], t1[1] - t2[1])
-
-
-DIRECTIONS = {"U": (0, 1), "D": (0, -1), "L": (-1, 0), "R": (1, 0)}
+DIRECTIONS = {"U": Point(0, 1), "D": Point(0, -1), "L": Point(-1, 0), "R": Point(1, 0)}
 
 
 class State:
-    head: tuple[int, int] = (0, 0)
-    tail: tuple[int, int] = (0, 0)
-    visited: set[tuple[int, int]] = {(0, 0)}
-
-    def move(self, command: Command) -> None:
-        print(command)
-        for steps in range(command.steps):
-            self.update(command.direction)
-            self.visited.add(self.tail)
-
-    def update(self, direction: str) -> None:
-        match direction:
-            case "U":
-                self.head = tadd(self.head, (0, 1))
-            case "D":
-                self.head = tadd(self.head, (0, -1))
-            case "L":
-                self.head = tadd(self.head, (-1, 0))
-            case "R":
-                self.head = tadd(self.head, (1, 0))
-            case _:
-                raise ValueError(f"Unknown direction: {direction}")
-        self.tail = tadd(self.tail, self.tail_step(self.head, self.tail))
-        # print(f"New locations: {self.head}, {self.tail}")
+    head: Point = Point(0, 0)
+    tail: Point = Point(0, 0)
+    visited: set[Point] = {Point(0, 0)}
 
     @staticmethod
-    def tail_step(h: tuple[int, int], t: tuple[int, int]) -> tuple[int, int]:
-        diff = tsub(t, h)
-        # print(f"Diff: {diff}")
-        # h = (5,5), t=(4,3) -> diff = (-1,-2)
-        # if (-1 <= diff[0] <= 1) and (-1 <= diff[1] <= 1):
-        #     # Do nothing, we're close enough
-        #     return 0,0
-        if (-1 <= diff[0] <= 1) and (diff[1] == -2):
-            # Move a step up and to the middle
-            return -diff[0], 1
-        elif (-1 <= diff[0] <= 1) and (diff[1] == 2):
-            # Move a step down
-            return -diff[0], -1
-        elif (diff[0] == -2) and (-1 <= diff[1] <= 1):
-            # Move a step right
-            return 1, -diff[1]
-        elif (diff[0] == 2) and (-1 <= diff[1] <= 1):
-            # Move a step left
-            return -1, -diff[1]
-        elif (diff[0] == 2) and (diff[1] == 2):
-            return -1, -1
-        elif (diff[0] == -2) and (diff[1] == 2):
-            return 1, -1
-        elif (diff[0] == 2) and (diff[1] == -2):
-            return -1, 1
-        elif (diff[0] == -2) and (diff[1] == -2):
-            return 1, 1
-        else:
-            print(f"Default: {diff}")
-            return 0, 0
-            # Need to move diagonally
+    def _is_connected(diff: Point) -> bool:
+        return (abs(diff.x) <= 1) and (abs(diff.y) <= 1)
+
+    def process_command(self, command: Command) -> None:
+        print(f"Processing command: {command}")
+        for _ in range(command.steps):
+            self.head += DIRECTIONS[command.direction]
+            # print(f"Head: {self.head}")
+            # print(f"Tail before: {self.tail}")
+            diff = self.head - self.tail
+            if not self._is_connected(diff):
+                if (abs(diff.x) == 2) and (-1 <= diff.y <= 1):
+                    self.tail += Point(np.sign(diff.x), diff.y)
+                # if (diff.x == 2) and (-1 <= diff.y <= 1):
+                # print(f"Moving right")
+                # self.tail += Point(1, diff.y)
+                # elif (diff.x == -2) and (-1 <= diff.y <= 1):
+                # print(f"Moving left")
+                # self.tail += Point(-1, diff.y)
+
+                elif (-1 <= diff.x <= 1) and (abs(diff.y) == 2):
+                    self.tail += Point(diff.x, np.sign(diff.y))
+                # elif (-1 <= diff.x <= 1) and (diff.y == 2):
+                # print(f"Moving up")
+                # self.tail += Point(diff.x, 1)
+                # elif (-1 <= diff.x <= 1) and (diff.y == -2):
+                # print(f"Moving down")
+                # self.tail += Point(diff.x, -1)
+                else:
+                    raise ValueError(f"Unsupported diff: {diff}")
+                # if self.head.x == self.tail.x:
+                #     self.tail = self.tail + Point(0, -np.sign())
+                # print(f"Tail after: {self.tail}")
+            self.visited.add(self.tail)
+            # print()
 
 
 def parse_data(lines: list[str]) -> list[Command]:
@@ -88,8 +79,8 @@ def parse_data(lines: list[str]) -> list[Command]:
 def part1(commands: list[Command]) -> int:
     board = State()
     for command in commands:
-        board.move(command)
-    print(board.visited)
+        board.process_command(command)
+    # print(board.visited)
     return len(board.visited)
 
 
@@ -102,7 +93,8 @@ if __name__ == "__main__":
     example_data = parse_data(load_data(True))
     data = parse_data(load_data(False))
 
-    # 6193 Too high
+    # Output: 6193
+    # Required: 6181
 
     assert part1(example_data) == 13
     print_result(1, part1(data))
