@@ -71,9 +71,6 @@ if __name__ == "__main__":
     example_data = parse_data(load_data(True))
     data = parse_data(load_data(False))
 
-    # Output: 6193
-    # Required: 6181
-
     assert part1(example_data) == 13
     print_result(1, part1(data))
 
