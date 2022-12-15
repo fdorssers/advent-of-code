@@ -3,6 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Iterator
 
+from more_itertools import flatten
+
 from utils import load_data
 from utils import print_result
 
@@ -101,9 +103,7 @@ def split_ranges_by_beacon(
 
 
 def part1(sensors: list[Sensor], line: int) -> int:
-    lines: list[tuple[int, int]] = []
-    for sensor in sensors:
-        lines.extend(sensor.covered_range_on_line(line))
+    lines = flatten(sensor.covered_range_on_line(line) for sensor in sensors)
     merged_lines = merge_ranges(lines)
     split_lines = split_ranges_by_beacon(
         merged_lines,
