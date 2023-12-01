@@ -4,25 +4,20 @@ import string
 from utils import load_data
 from utils import print_result
 
-NUM_WORDS = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
-NUMS = dict(zip(NUM_WORDS, list(string.digits)[1:]))
-VALS = list(NUMS.keys()) + list(string.digits)
-
-
-def task1(lines: list[str]) -> int:
-    int_lines = [[val for val in line if val.isdigit()] for line in lines]
-    return sum(int(line[0] + line[-1]) for line in int_lines)
+WORDS = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
+NUM_DICT = dict(zip(string.digits, string.digits))
+ALL_DICT = NUM_DICT | dict(zip(WORDS, string.digits[1:]))
 
 
 def join_first_and_last(results: dict[int, str]) -> int:
     return int(results[min(results.keys())] + results[max(results.keys())])
 
 
-def task2(lines: list[str]) -> int:
+def task(lines: list[str], dct: dict[str, str]) -> int:
     return sum(
         [
             join_first_and_last(
-                {m.start(): NUMS.get(val, val) for val in VALS for m in re.finditer(val, line)}
+                {m.start(): dct[val] for val in dct.keys() for m in re.finditer(val, line)}
             )
             for line in lines
         ]
@@ -33,10 +28,10 @@ if __name__ == "__main__":
     example_data = load_data(True)
     data = load_data()
 
-    assert task1(example_data) == 142
-    print_result(1, task1(data))
+    assert task(example_data, NUM_DICT) == 142
+    print_result(1, task(data, NUM_DICT))
 
     example_data_2 = load_data(True, 2)
 
-    assert task2(example_data_2) == 281
-    print_result(2, task2(data))
+    assert task(example_data_2, ALL_DICT) == 281
+    print_result(2, task(data, ALL_DICT))
