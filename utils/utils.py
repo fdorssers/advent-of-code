@@ -6,13 +6,13 @@ from pathlib import Path
 PROJECT_DIR = Path(__file__).parents[1]
 
 
-def load_data(example: bool = False) -> list[str]:
+def load_data(example: bool = False, number: int | None = None) -> list[str]:
     """
     Load either the actual or the example data for a specific day. Note that the day/task number is
     automatically detected based on the calling stack.
 
     :param example:
-    :param line_parser:
+    :param number:
     :return:
     """
     year = _get_year_from_stack()
@@ -21,7 +21,7 @@ def load_data(example: bool = False) -> list[str]:
         PROJECT_DIR
         / f"aoc_{year}"
         / "data"
-        / f"task{task_id:02d}{'_example' if example else ''}.txt"
+        / f"task{task_id:02d}{'_example' if example else ''}{number if number else ''}.txt"
     ) as f:
         return f.read().splitlines()
 
