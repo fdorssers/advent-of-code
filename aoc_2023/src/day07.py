@@ -22,25 +22,13 @@ class HandAndBid:
         split = line.split()
         return HandAndBid(split[0], int(split[-1]), joker_rule)
 
-    def type_no_joker(self) -> int:
+    @lru_cache
+    def type(self) -> int:
         card_counts = Counter(self.hand)
-        count_counter = Counter(card_counts.values())
-        if (4 in count_counter) or (5 in count_counter):
-            return max(count_counter) + 2
-        if (3 in count_counter) and (2 in count_counter):
-            return 5
-        if 3 in count_counter:
-            return 4
-        if (2 in count_counter) and (count_counter[2] == 2):
-            return 3
-        if 2 in count_counter:
-            return 2
-        return 1
-
-    def type_with_joker(self) -> int:
-        card_counts = Counter(self.hand)
-        joker_count = card_counts["J"]
-        del card_counts["J"]
+        joker_count = 0
+        if self.joker_rule:
+            joker_count = card_counts["J"]
+            del card_counts["J"]
         count_counter = Counter(card_counts.values())
         if (joker_count == 5) or (max(count_counter) + joker_count == 5):
             return 7
@@ -56,26 +44,14 @@ class HandAndBid:
             return 2
         return 1
 
-    @lru_cache
-    def type(self) -> int:
-        if self.joker_rule:
-            return self.type_with_joker()
-        else:
-            return self.type_no_joker()
-
     def __lt__(self, other: HandAndBid) -> bool:
+        card_ranking = JOKER_CARD_RANKINGS if self.joker_rule else CARD_RANKINGS
         if self.type() == other.type():
             for l, r in zip(self.hand, other.hand):
-                if self.joker_rule:
-                    l_v, r_v = JOKER_CARD_RANKINGS[l], JOKER_CARD_RANKINGS[r]
-                    if l_v == r_v:
-                        continue
-                    return l_v < r_v
-                else:
-                    l_v, r_v = CARD_RANKINGS[l], CARD_RANKINGS[r]
-                    if l_v == r_v:
-                        continue
-                    return l_v < r_v
+                l_v, r_v = card_ranking[l], card_ranking[r]
+                if l_v == r_v:
+                    continue
+                return l_v < r_v
         return self.type() < other.type()
 
 
