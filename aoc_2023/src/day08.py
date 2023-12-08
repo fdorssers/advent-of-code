@@ -1,4 +1,5 @@
 import math
+from collections import defaultdict
 
 from utils import load_data
 from utils import print_result
@@ -15,13 +16,12 @@ def parse(data: list[str]) -> tuple[list[str], dict[str, dict[str, str]]]:
 
 def task01(instructions: list[str], element_map: dict[str, dict[str, str]]) -> int:
     current = "AAA"
-    target = "ZZZ"
     steps = 0
     while True:
         for instruction in instructions:
             current = element_map[current][instruction]
             steps += 1
-        if current == target:
+        if current == "ZZZ":
             break
     return steps
 
@@ -30,16 +30,14 @@ def determine_distances(
     instructions: list[str], element_map: dict[str, dict[str, str]]
 ) -> dict[str, int]:
     starting_positions = [el for el in element_map if el.endswith("A")]
-    distances = {}
+    distances: dict[str, int] = defaultdict(int)
     for starting_position in starting_positions:
-        steps = 0
         current = starting_position
         while True:
             for instruction in instructions:
                 current = element_map[current][instruction]
-                steps += 1
+                distances[starting_position] += 1
             if current.endswith("Z"):
-                distances[starting_position] = steps
                 break
     return distances
 
