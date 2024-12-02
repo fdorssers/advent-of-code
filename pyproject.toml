@@ -22,6 +22,7 @@ strict = true
 
 [tool.ruff]
 line-length = 99
+ignore = ["E741"]
 
 [tool.ruff.lint.isort]
 force-single-line = true

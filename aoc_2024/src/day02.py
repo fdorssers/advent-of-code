@@ -7,20 +7,16 @@ def parse(data: list[str]) -> list[list[int]]:
 
 
 def is_safe(line: list[int]) -> bool:
-    diffs = [a - b for a, b in zip(line, line[1:])]
-    if not (all(diff > 0 for diff in diffs) or all(diff < 0 for diff in diffs)):
-        return False
-    return all(0 <= abs(val) <= 3 for val in diffs)
+    diffs = set(a - b for a, b in zip(line, line[1:]))
+    return diffs.issubset({1, 2, 3}) or diffs.issubset({-1, -2, -3})
 
 
 def task01(data: list[list[int]]) -> int:
-    return sum([is_safe(line) for line in data])
+    return sum(is_safe(line) for line in data)
 
 
 def task02(data: list[list[int]]) -> int:
-    return sum(
-        any(is_safe(line[:num] + line[num + 1 :]) for num in range(len(data) - 1)) for line in data
-    )
+    return sum(any(is_safe(l[:i] + l[i + 1 :]) for i in range(len(data) - 1)) for l in data)
 
 
 if __name__ == "__main__":
