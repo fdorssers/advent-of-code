@@ -1,5 +1,4 @@
 import re
-from operator import mul
 from typing import Iterator
 
 from utils import load_data
@@ -10,17 +9,17 @@ def parse(data: list[str]) -> str:
     return "".join(data)
 
 
-patterns = re.compile(r"(mul\(\d+,\d+\))|(do\(\))|(don't\(\))")
+patterns = re.compile(r"(mul\((\d+),(\d+)\))|(do\(\))|(don't\(\))")
 
 
 def get_multiplications(data: str, task1: bool) -> Iterator[int]:
     enabled = True
     for match in re.findall(patterns, data):
         if match[0] and (enabled or task1):
-            yield mul(*map(int, re.findall(r"\d+", match[0])))
-        elif match[1]:
+            yield int(match[1]) * int(match[2])
+        elif match[3]:
             enabled = True
-        elif match[2]:
+        elif match[4]:
             enabled = False
 
 
