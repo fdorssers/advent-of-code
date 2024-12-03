@@ -1,5 +1,6 @@
 import re
 from operator import mul
+from typing import Iterator
 
 from utils import load_data
 from utils import print_result
@@ -9,40 +10,32 @@ def parse(data: list[str]) -> str:
     return "".join(data)
 
 
-pattern = re.compile(r"mul\(\d+,\d+\)")
+patterns = re.compile(r"(mul\(\d+,\d+\))|(do\(\))|(don't\(\))")
 
 
-def task01(data: str) -> int:
-    total = 0
-    matches = re.findall(pattern, data)
-    total += sum(mul(*map(int, re.findall(r"\d+", match))) for match in matches)
-    return total
-
-
-pattern2 = re.compile(r"(mul\(\d+,\d+\))|(do\(\))|(don't\(\))")
-
-
-def task02(data: str) -> int:
-    total = 0
+def get_multiplications(data: str, task1: bool) -> Iterator[int]:
     enabled = True
-    matches = re.findall(pattern2, data)
+    matches = re.findall(patterns, data)
     for match in matches:
-        if match[0] and enabled:
-            total += mul(*map(int, re.findall(r"\d+", match[0])))
+        if match[0] and (enabled or task1):
+            yield mul(*map(int, re.findall(r"\d+", match[0])))
         elif match[1]:
             enabled = True
         elif match[2]:
             enabled = False
-    return total
+
+
+def task(data: str, task1: bool) -> int:
+    return sum(get_multiplications(data, task1))
 
 
 if __name__ == "__main__":
     example_data = parse(load_data(True))
     data = parse(load_data())
 
-    assert task01(example_data) == 161
-    print_result(1, task01(data))
+    assert task(example_data, True) == 161
+    print_result(1, task(data, True))
 
     example_data_2 = parse(load_data(True, 2))
-    assert task02(example_data_2) == 48
-    print_result(2, task02(data))
+    assert task(example_data_2, False) == 48
+    print_result(2, task(data, False))
