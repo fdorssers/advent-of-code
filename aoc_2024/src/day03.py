@@ -15,8 +15,7 @@ patterns = re.compile(r"(mul\(\d+,\d+\))|(do\(\))|(don't\(\))")
 
 def get_multiplications(data: str, task1: bool) -> Iterator[int]:
     enabled = True
-    matches = re.findall(patterns, data)
-    for match in matches:
+    for match in re.findall(patterns, data):
         if match[0] and (enabled or task1):
             yield mul(*map(int, re.findall(r"\d+", match[0])))
         elif match[1]:
